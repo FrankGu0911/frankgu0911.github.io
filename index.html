@@ -69,6 +69,70 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mellanox-win-rocev2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/02/29/mellanox-win-rocev2/" class="article-date">
+  <time class="dt-published" datetime="2024-02-28T19:02:22.000Z" itemprop="datePublished">2024-02-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/02/29/mellanox-win-rocev2/">排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近在安装了Mellanox ConnectX-3 Pro的网卡，想要使用RDMA来加速网络传输，但是在安装好驱动后，发现SMB无法启动RDMA。在网上找了一圈，也没有找到解决方案，最后自己摸索了一下，终于解决了这个问题，就此记录一下。</p>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>为了最简单地启用RDMA，我两端都使用了Windows系统，客户端是Windows 10 22H2，服务端是Windows Server 2022。两端都使用了Mellanox ConnectX-3 Pro 40G网卡。通过软路由连接，题外话，软路由的软交换是能够支持RDMA的，这里我使用的软路由系统是iKuai。两端配置如下：</p>
+<p>客户端：</p>
+<ul>
+<li>Windows 10 22H2</li>
+<li>Ryzen 9 7950X</li>
+<li>Mellanox ConnectX-3 Pro 40G网卡</li>
+</ul>
+<p>服务端：</p>
+<ul>
+<li>Windows Server 2022</li>
+<li>Xeon E5-2640 v4</li>
+<li>Mellanox ConnectX-3 Pro 40G网卡</li>
+</ul>
+<h2 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h2><p>首先，我们需要确认网卡的驱动是否安装正确。在设备管理器中，我们可以看到Mellanox ConnectX-3 Pro网卡的驱动已经安装成功。通过<code>Get-NetAdapter</code>命令，我们可以看到网卡的详细信息，包括网卡的名字、状态、MAC地址等。通过<code>Get-NetAdapterRDMA</code>命令，我们可以看到网卡是否支持RDMA，以及RDMA是否已经启用。在我的环境中，服务端的RDMA是已经启用的，但是客户端的RDMA是没有启用的，所以需要排查客户端的问题。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-NetAdapterRDMA</span></span><br><span class="line">Name                      InterfaceDescription                     Enabled     PFC        ETS       </span><br><span class="line"><span class="literal">----</span>                      <span class="literal">--------------------</span>                     <span class="literal">-------</span>     <span class="literal">---</span>        <span class="literal">---</span></span><br><span class="line">以太网 <span class="number">13</span>                 HP InfiniBand FDR/Ethernet <span class="number">10</span>Gb/<span class="number">40</span>Gb ...  False        False      False</span><br><span class="line">以太网 <span class="number">14</span>                 HP InfiniBand FDR/Ethernet <span class="number">10</span>Gb/<span class="number">40</span>Gb ...  False        False      False</span><br><span class="line"><span class="built_in">PS</span> C:\&gt;</span><br><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-SmbServerNetworkInterface</span></span><br><span class="line">Interface Index RSS Capable RDMA Capable Speed    IpAddresses</span><br><span class="line"><span class="literal">---------------</span> <span class="literal">-----------</span> <span class="literal">------------</span> <span class="literal">-----</span>    <span class="literal">-----------</span></span><br><span class="line"><span class="number">12</span>              True        False         <span class="number">40</span> Gbps  &#123;...&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>通过<code>Get-MlnxDriverCoreSetting</code>命令，可以查看ConnectX-3 Pro网卡的驱动设置，包括RoCE版本、网卡的状态等。我们需要使用RoCEv2，所以需要确认RoCEv2是否已经启用。在我的环境中，客户端的RoCEv2是没有启用的，找到问题所在了。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-MlnxDriverCoreSetting</span></span><br><span class="line"></span><br><span class="line">Caption               : DriverCoreSettingData <span class="string">&#x27;mlx4_bus&#x27;</span></span><br><span class="line">Description           : Mellanox Driver Option Settings</span><br><span class="line">ElementName           : mlx4_bus</span><br><span class="line">InstanceID            : mlx4_bus</span><br><span class="line">Name                  : mlx4_bus</span><br><span class="line">Source                : <span class="number">3</span></span><br><span class="line">SystemName            : DESKTOP<span class="literal">-ONVNK2T</span></span><br><span class="line">LogMttsPerSeg         : <span class="number">0</span></span><br><span class="line">LogNumCq              : <span class="number">19</span></span><br><span class="line">LogNumMac             : <span class="number">7</span></span><br><span class="line">LogNumMcg             : <span class="number">4294967295</span></span><br><span class="line">LogNumMpt             : <span class="number">19</span></span><br><span class="line">LogNumMtt             : <span class="number">20</span></span><br><span class="line">LogNumQp              : <span class="number">20</span></span><br><span class="line">LogNumRdmaRc          : <span class="number">4</span></span><br><span class="line">LogNumSrq             : <span class="number">16</span></span><br><span class="line">LogNumVlan            : <span class="number">7</span></span><br><span class="line">MaximumWorkingThreads : <span class="number">4294967295</span></span><br><span class="line">RoceMode              : <span class="number">0</span></span><br><span class="line">Set4kMtu              : True</span><br><span class="line">SriovPort1NumVFs      :</span><br><span class="line">SriovPort2NumVFs      :</span><br><span class="line">SriovPortMode         :</span><br><span class="line">PSComputerName        :</span><br></pre></td></tr></table></figure>
+<p>可以看到，RoceMode是0，说明RoCE是没有启用的，我们需要将RoCEv2启用。通过<code>Set-MlnxDriverCoreSetting</code>命令，我们可以修改RoCEv2的设置。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Set-MlnxDriverCoreSetting</span> <span class="literal">-RoceMode</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>修改成功后，我们需要重启网卡，使设置生效。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Restart-NetAdapter</span> <span class="literal">-Name</span> <span class="string">&quot;以太网 13&quot;</span></span><br></pre></td></tr></table></figure>
+<p>重启成功后，我们再次查看RDMA的状态，可以看到RDMA已经启用了。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-NetAdapterRDMA</span></span><br><span class="line">Name                      InterfaceDescription                     Enabled     PFC        ETS</span><br><span class="line"><span class="literal">----</span>                      <span class="literal">--------------------</span>                     <span class="literal">-------</span>     <span class="literal">---</span>        <span class="literal">---</span></span><br><span class="line">以太网 <span class="number">13</span>                 HP InfiniBand FDR/Ethernet <span class="number">10</span>Gb/<span class="number">40</span>Gb ...  True        False      False</span><br><span class="line">以太网 <span class="number">14</span>                 HP InfiniBand FDR/Ethernet <span class="number">10</span>Gb/<span class="number">40</span>Gb ...  True       False      False</span><br></pre></td></tr></table></figure>
+<p>检查SMB的RDMA状态，可以看到客户端SMB的RDMA也已经启用了。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-SmbClientNetworkInterface</span></span><br><span class="line">Interface Index RSS Capable RDMA Capable Speed    IpAddresses</span><br><span class="line"><span class="literal">---------------</span> <span class="literal">-----------</span> <span class="literal">------------</span> <span class="literal">-----</span>    <span class="literal">-----------</span></span><br><span class="line"><span class="number">12</span>              True        True         <span class="number">40</span> Gbps  &#123;...&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/02/29/mellanox-win-rocev2/" data-id="clt66iq0h0000ywwc29lubujs" data-title="排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-zte-modem-crash" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2024/02/29/zte-modem-crash/" class="article-date">
@@ -275,6 +339,10 @@ The key&#39;s randomart image is:
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2024/02/29/mellanox-win-rocev2/">排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题</a>
+          </li>
         
           <li>
             <a href="/2024/02/29/zte-modem-crash/">记录一次光猫崩溃</a>
