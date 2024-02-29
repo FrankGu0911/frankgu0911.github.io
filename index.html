@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   
   
-  <title>Hexo</title>
+  <title>Frank Tech Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="Frank Tech Blog">
 <meta property="og:url" content="http://example.com/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="John Doe">
+<meta property="og:site_name" content="Frank Tech Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Frank Gu">
 <meta name="twitter:card" content="summary">
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="Frank Tech Blog" type="application/atom+xml">
   
   
     <link rel="shortcut icon" href="/favicon.png">
@@ -39,7 +39,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">Frank Tech Blog</a>
       </h1>
       
     </div>
@@ -55,12 +55,12 @@
       <nav id="sub-nav">
         
         
-          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
         
-        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
       </div>
     </div>
   </div>
@@ -68,6 +68,50 @@
 
       <div class="outer">
         <section id="main">
+  
+    <article id="post-winserver-android-hyperv" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/03/01/winserver-android-hyperv/" class="article-date">
+  <time class="dt-published" datetime="2024-02-29T16:59:27.000Z" itemprop="datePublished">2024-03-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/03/01/winserver-android-hyperv/">在Windows Server 2022上安装Android模拟器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>由于需要在Windows Server 2022上挂一些游戏（我们粥批是这样的），需要安装一个Android模拟器。由于Hyper-V的存在，市面上主流的模拟器都会报错，有报缺少VT-D的，有直接说无法启动的，也有让我关闭Hyper-V的。但是我又需要Hyper-V来跑一些虚拟机，所以不能关闭。</p>
+<p>其实在Windows10上，hyper-v和模拟器是可以共存的，需要去功能中添加一个叫做“Windows Hypervisor Platform(Windows虚拟机监控程序平台)”的功能，就可以让安卓模拟器、以及VMware等虚拟机软件和Hyper-V共存。但是在Windows Server 2022上，在功能中找不到这个功能，需要使用PowerShell来安装。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Dism /online /<span class="built_in">Enable-Feature</span> /FeatureName:HypervisorPlatform /All <span class="comment"># 安装Windows Hypervisor Platform</span></span><br><span class="line"><span class="comment"># 同时安装VirtualMachinePlatform与WSL 一次性重启解决</span></span><br><span class="line">Dism /online /<span class="built_in">Enable-Feature</span> /FeatureName:VirtualMachinePlatform /All</span><br><span class="line">Dism /online /<span class="built_in">Enable-Feature</span> /FeatureName:Microsoft<span class="literal">-Windows-Subsystem-Linux</span> /All</span><br></pre></td></tr></table></figure>
+<p>随后重启，就可以在Windows Server 2022上安装Android模拟器了。我选择了传说中最流畅的<a target="_blank" rel="noopener" href="https://mumu.163.com/">MuMu模拟器</a>，下载后一路下一步安装即可，过程中并没有报错，问题解决。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/03/01/winserver-android-hyperv/" data-id="clt7jzo4p000h90wc2xgnbvaw" data-title="在Windows Server 2022上安装Android模拟器" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyper-V/" rel="tag">Hyper-V</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F/" rel="tag">明日方舟</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-mellanox-win-rocev2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
@@ -121,10 +165,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2024/02/29/mellanox-win-rocev2/" data-id="clt66iq0h0000ywwc29lubujs" data-title="排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2024/02/29/mellanox-win-rocev2/" data-id="clt7jzo4q000i90wcetihddcg" data-title="排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mellanox/" rel="tag">Mellanox</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RDMA/" rel="tag">RDMA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+
     </footer>
   </div>
   
@@ -169,10 +215,14 @@
 <h2 id="开启telnet"><a href="#开启telnet" class="headerlink" title="开启telnet"></a>开启telnet</h2><p>老版本的固件可以通过两款开源工具来解锁telnet：</p>
 <ol>
 <li>来自<a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/space-uid-273987.html">mayi5147</a>：<a target="_blank" rel="noopener" href="https://github.com/douniwan5788/zte_modem_tools">https://github.com/douniwan5788/zte_modem_tools</a></li>
-<li>来自<a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/space-uid-294565.html">thank243</a>：<a target="_blank" rel="noopener" href="https://github.com/thank243/zteOnu">https://github.com/thank243/zteOnu</a><br>这里我使用的是第一款工具，需要Python3环境，按照README的说明，先安装依赖：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">conda create -n zte python=3.8</span><br><span class="line">conda activate zte</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
-我使用的是电信版固件，默认管理员用户名与密码是<code>telecomadmin</code>和<code>nE7jA%5m</code>，所以运行：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 zte_factroymode.py --user telecomadmin --pass nE7jA%5m --ip 192.168.1.1 --port 8080 telnet open</span><br></pre></td></tr></table></figure>
-<img src="/images/zte-modem/zte-telnetopen.png" alt="使用开源工具解锁Telnet"><br>运行成功后，光猫的telnet就被打开了，同时会给一个telnet的用户名和密码，记得赶紧操作，十几分钟半个小时后，用户名和密码就会换。</li>
+<li>来自<a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/space-uid-294565.html">thank243</a>：<a target="_blank" rel="noopener" href="https://github.com/thank243/zteOnu">https://github.com/thank243/zteOnu</a></li>
 </ol>
+<p>这里我使用的是第一款工具，需要Python3环境，按照README的说明，先安装依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">conda create -n zte python=3.8</span><br><span class="line">conda activate zte</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+<p>我使用的是电信版固件，默认管理员用户名与密码是<code>telecomadmin</code>和<code>nE7jA%5m</code>，所以运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 zte_factroymode.py --user telecomadmin --pass nE7jA%5m --ip 192.168.1.1 --port 8080 telnet open</span><br></pre></td></tr></table></figure>
+<p><img src="/images/zte-modem/zte-telnetopen.png" alt="使用开源工具解锁Telnet"></p>
+<p>运行成功后，光猫的telnet就被打开了，同时会给一个telnet的用户名和密码，记得赶紧操作，十几分钟半个小时后，用户名和密码就会换。</p>
 <p>Windows下可以使用putty连接telnet，或者在系统功能中安装Telnet，安装过程不再赘述。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet 192.168.1.1</span><br></pre></td></tr></table></figure>
 <p><img src="/images/zte-modem/telnet-con.png" alt="Telnet登陆"></p>
@@ -201,10 +251,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2024/02/29/zte-modem-crash/" data-id="clt65at200000d8wc1xq0fw8h" data-title="记录一次光猫崩溃" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2024/02/29/zte-modem-crash/" data-id="clt7jzo4i000190wc0ut5b2il" data-title="记录一次光猫崩溃" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TR069/" rel="tag">TR069</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Telnet/" rel="tag">Telnet</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%85%89%E7%8C%AB/" rel="tag">光猫</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%B5%E4%BF%A1/" rel="tag">电信</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+
     </footer>
   </div>
   
@@ -298,10 +350,12 @@ The key&#39;s randomart image is:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2024/02/28/Hexo-build/" data-id="clt4nsgvu00001swc7n7568ld" data-title="记录一次Hexo的搭建与部署" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2024/02/28/Hexo-build/" data-id="clt7jzo4k000290wc3ja43bhz" data-title="记录一次Hexo的搭建与部署" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Blog/" rel="tag">Blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li></ul>
+
     </footer>
   </div>
   
@@ -320,15 +374,10 @@ The key&#39;s randomart image is:
 
   
     
-
-  
-    
-  
-    
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/02/">February 2024</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blog/" rel="tag">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyper-V/" rel="tag">Hyper-V</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mellanox/" rel="tag">Mellanox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RDMA/" rel="tag">RDMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TR069/" rel="tag">TR069</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Telnet/" rel="tag">Telnet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%89%E7%8C%AB/" rel="tag">光猫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F/" rel="tag">明日方舟</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E4%BF%A1/" rel="tag">电信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
     </div>
   </div>
 
@@ -336,9 +385,32 @@ The key&#39;s randomart image is:
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/Blog/" style="font-size: 10px;">Blog</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Hyper-V/" style="font-size: 10px;">Hyper-V</a> <a href="/tags/Mellanox/" style="font-size: 10px;">Mellanox</a> <a href="/tags/RDMA/" style="font-size: 10px;">RDMA</a> <a href="/tags/TR069/" style="font-size: 10px;">TR069</a> <a href="/tags/Telnet/" style="font-size: 10px;">Telnet</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/%E5%85%89%E7%8C%AB/" style="font-size: 10px;">光猫</a> <a href="/tags/%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F/" style="font-size: 10px;">明日方舟</a> <a href="/tags/%E7%94%B5%E4%BF%A1/" style="font-size: 10px;">电信</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">三月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/02/">二月 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2024/03/01/winserver-android-hyperv/">在Windows Server 2022上安装Android模拟器</a>
+          </li>
         
           <li>
             <a href="/2024/02/29/mellanox-win-rocev2/">排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题</a>
@@ -365,7 +437,7 @@ The key&#39;s randomart image is:
   <div class="outer">
     <div id="footer-info" class="inner">
       
-      &copy; 2024 John Doe<br>
+      &copy; 2024 Frank Gu<br>
       Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
