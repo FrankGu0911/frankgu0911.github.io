@@ -1,12 +1,22 @@
+
+
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" data-default-color-scheme=dark>
+
+
+
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Frank Gu">
+  <meta name="keywords" content="">
   
-  <title>排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题 | Frank Tech Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="背景最近在安装了Mellanox ConnectX-3 Pro的网卡，想要使用RDMA来加速网络传输，但是在安装好驱动后，发现SMB无法启动RDMA。在网上找了一圈，也没有找到解决方案，最后自己摸索了一下，终于解决了这个问题，就此记录一下。 环境为了最简单地启用RDMA，我两端都使用了Windows系统，客户端是Windows 10 22H2，服务端是Windows Server 2022。两端都">
+    <meta name="description" content="背景最近在安装了Mellanox ConnectX-3 Pro的网卡，想要使用RDMA来加速网络传输，但是在安装好驱动后，发现SMB无法启动RDMA。在网上找了一圈，也没有找到解决方案，最后自己摸索了一下，终于解决了这个问题，就此记录一下。 环境为了最简单地启用RDMA，我两端都使用了Windows系统，客户端是Windows 10 22H2，服务端是Windows Server 2022。两端都">
 <meta property="og:type" content="article">
 <meta property="og:title" content="排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题">
 <meta property="og:url" content="http://example.com/2024/02/29/mellanox-win-rocev2/index.html">
@@ -19,84 +29,253 @@
 <meta property="article:tag" content="Windows">
 <meta property="article:tag" content="Mellanox">
 <meta property="article:tag" content="RDMA">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Frank Tech Blog" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
+<meta name="twitter:card" content="summary_large_image">
   
   
   
-<link rel="stylesheet" href="/css/style.css">
+  <title>排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题 - Frank Tech Blog</title>
 
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
   
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
   
 <meta name="generator" content="Hexo 7.1.1"></head>
 
+
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Frank Tech Blog</a>
-      </h1>
-      
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Frank Tech Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/images/banner/banner-2024-1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题"></span>
+          
+        </div>
+
         
-          <a class="main-nav-link" href="/">Home</a>
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-29 03:02" pubdate>
+          2024年2月29日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+          602 字
         
-      </nav>
-      <nav id="sub-nav">
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
         
         
-          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
         
-        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+          6 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
       </div>
+
+      
     </div>
   </div>
-</header>
+</div>
 
-      <div class="outer">
-        <section id="main"><article id="post-mellanox-win-rocev2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2024/02/29/mellanox-win-rocev2/" class="article-date">
-  <time class="dt-published" datetime="2024-02-28T19:02:22.000Z" itemprop="datePublished">2024-02-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题
-    </h1>
-  
+</div>
 
-      </header>
+  </header>
+
+  <main>
     
-    <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近在安装了Mellanox ConnectX-3 Pro的网卡，想要使用RDMA来加速网络传输，但是在安装好驱动后，发现SMB无法启动RDMA。在网上找了一圈，也没有找到解决方案，最后自己摸索了一下，终于解决了这个问题，就此记录一下。</p>
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近在安装了Mellanox ConnectX-3 Pro的网卡，想要使用RDMA来加速网络传输，但是在安装好驱动后，发现SMB无法启动RDMA。在网上找了一圈，也没有找到解决方案，最后自己摸索了一下，终于解决了这个问题，就此记录一下。</p>
 <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>为了最简单地启用RDMA，我两端都使用了Windows系统，客户端是Windows 10 22H2，服务端是Windows Server 2022。两端都使用了Mellanox ConnectX-3 Pro 40G网卡。通过软路由连接，题外话，软路由的软交换是能够支持RDMA的，这里我使用的软路由系统是iKuai。两端配置如下：</p>
 <p>客户端：</p>
 <ul>
@@ -111,158 +290,367 @@
 <li>Mellanox ConnectX-3 Pro 40G网卡</li>
 </ul>
 <h2 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h2><p>首先，我们需要确认网卡的驱动是否安装正确。在设备管理器中，我们可以看到Mellanox ConnectX-3 Pro网卡的驱动已经安装成功。通过<code>Get-NetAdapter</code>命令，我们可以看到网卡的详细信息，包括网卡的名字、状态、MAC地址等。通过<code>Get-NetAdapterRDMA</code>命令，我们可以看到网卡是否支持RDMA，以及RDMA是否已经启用。在我的环境中，服务端的RDMA是已经启用的，但是客户端的RDMA是没有启用的，所以需要排查客户端的问题。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-NetAdapterRDMA</span></span><br><span class="line">Name                      InterfaceDescription                     Enabled     PFC        ETS       </span><br><span class="line"><span class="literal">----</span>                      <span class="literal">--------------------</span>                     <span class="literal">-------</span>     <span class="literal">---</span>        <span class="literal">---</span></span><br><span class="line">以太网 <span class="number">13</span>                 HP InfiniBand FDR/Ethernet <span class="number">10</span>Gb/<span class="number">40</span>Gb ...  False        False      False</span><br><span class="line">以太网 <span class="number">14</span>                 HP InfiniBand FDR/Ethernet <span class="number">10</span>Gb/<span class="number">40</span>Gb ...  False        False      False</span><br><span class="line"><span class="built_in">PS</span> C:\&gt;</span><br><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-SmbServerNetworkInterface</span></span><br><span class="line">Interface Index RSS Capable RDMA Capable Speed    IpAddresses</span><br><span class="line"><span class="literal">---------------</span> <span class="literal">-----------</span> <span class="literal">------------</span> <span class="literal">-----</span>    <span class="literal">-----------</span></span><br><span class="line"><span class="number">12</span>              True        False         <span class="number">40</span> Gbps  &#123;...&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">PS</span> C:\&gt;<span class="hljs-built_in">Get-NetAdapterRDMA</span><br>Name                      InterfaceDescription                     Enabled     PFC        ETS       <br><span class="hljs-literal">----</span>                      <span class="hljs-literal">--------------------</span>                     <span class="hljs-literal">-------</span>     <span class="hljs-literal">---</span>        <span class="hljs-literal">---</span><br>以太网 <span class="hljs-number">13</span>                 HP InfiniBand FDR/Ethernet <span class="hljs-number">10</span>Gb/<span class="hljs-number">40</span>Gb ...  False        False      False<br>以太网 <span class="hljs-number">14</span>                 HP InfiniBand FDR/Ethernet <span class="hljs-number">10</span>Gb/<span class="hljs-number">40</span>Gb ...  False        False      False<br><span class="hljs-built_in">PS</span> C:\&gt;<br><span class="hljs-built_in">PS</span> C:\&gt;<span class="hljs-built_in">Get-SmbServerNetworkInterface</span><br>Interface Index RSS Capable RDMA Capable Speed    IpAddresses<br><span class="hljs-literal">---------------</span> <span class="hljs-literal">-----------</span> <span class="hljs-literal">------------</span> <span class="hljs-literal">-----</span>    <span class="hljs-literal">-----------</span><br><span class="hljs-number">12</span>              True        False         <span class="hljs-number">40</span> Gbps  &#123;...&#125;<br>...<br></code></pre></td></tr></table></figure>
 <p>通过<code>Get-MlnxDriverCoreSetting</code>命令，可以查看ConnectX-3 Pro网卡的驱动设置，包括RoCE版本、网卡的状态等。我们需要使用RoCEv2，所以需要确认RoCEv2是否已经启用。在我的环境中，客户端的RoCEv2是没有启用的，找到问题所在了。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-MlnxDriverCoreSetting</span></span><br><span class="line"></span><br><span class="line">Caption               : DriverCoreSettingData <span class="string">&#x27;mlx4_bus&#x27;</span></span><br><span class="line">Description           : Mellanox Driver Option Settings</span><br><span class="line">ElementName           : mlx4_bus</span><br><span class="line">InstanceID            : mlx4_bus</span><br><span class="line">Name                  : mlx4_bus</span><br><span class="line">Source                : <span class="number">3</span></span><br><span class="line">SystemName            : DESKTOP<span class="literal">-ONVNK2T</span></span><br><span class="line">LogMttsPerSeg         : <span class="number">0</span></span><br><span class="line">LogNumCq              : <span class="number">19</span></span><br><span class="line">LogNumMac             : <span class="number">7</span></span><br><span class="line">LogNumMcg             : <span class="number">4294967295</span></span><br><span class="line">LogNumMpt             : <span class="number">19</span></span><br><span class="line">LogNumMtt             : <span class="number">20</span></span><br><span class="line">LogNumQp              : <span class="number">20</span></span><br><span class="line">LogNumRdmaRc          : <span class="number">4</span></span><br><span class="line">LogNumSrq             : <span class="number">16</span></span><br><span class="line">LogNumVlan            : <span class="number">7</span></span><br><span class="line">MaximumWorkingThreads : <span class="number">4294967295</span></span><br><span class="line">RoceMode              : <span class="number">0</span></span><br><span class="line">Set4kMtu              : True</span><br><span class="line">SriovPort1NumVFs      :</span><br><span class="line">SriovPort2NumVFs      :</span><br><span class="line">SriovPortMode         :</span><br><span class="line">PSComputerName        :</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">PS</span> C:\&gt;<span class="hljs-built_in">Get-MlnxDriverCoreSetting</span><br><br>Caption               : DriverCoreSettingData <span class="hljs-string">&#x27;mlx4_bus&#x27;</span><br>Description           : Mellanox Driver Option Settings<br>ElementName           : mlx4_bus<br>InstanceID            : mlx4_bus<br>Name                  : mlx4_bus<br>Source                : <span class="hljs-number">3</span><br>SystemName            : DESKTOP<span class="hljs-literal">-ONVNK2T</span><br>LogMttsPerSeg         : <span class="hljs-number">0</span><br>LogNumCq              : <span class="hljs-number">19</span><br>LogNumMac             : <span class="hljs-number">7</span><br>LogNumMcg             : <span class="hljs-number">4294967295</span><br>LogNumMpt             : <span class="hljs-number">19</span><br>LogNumMtt             : <span class="hljs-number">20</span><br>LogNumQp              : <span class="hljs-number">20</span><br>LogNumRdmaRc          : <span class="hljs-number">4</span><br>LogNumSrq             : <span class="hljs-number">16</span><br>LogNumVlan            : <span class="hljs-number">7</span><br>MaximumWorkingThreads : <span class="hljs-number">4294967295</span><br>RoceMode              : <span class="hljs-number">0</span><br>Set4kMtu              : True<br>SriovPort1NumVFs      :<br>SriovPort2NumVFs      :<br>SriovPortMode         :<br>PSComputerName        :<br></code></pre></td></tr></table></figure>
 <p>可以看到，RoceMode是0，说明RoCE是没有启用的，我们需要将RoCEv2启用。通过<code>Set-MlnxDriverCoreSetting</code>命令，我们可以修改RoCEv2的设置。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Set-MlnxDriverCoreSetting</span> <span class="literal">-RoceMode</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">PS</span> C:\&gt;<span class="hljs-built_in">Set-MlnxDriverCoreSetting</span> <span class="hljs-literal">-RoceMode</span> <span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
 <p>修改成功后，我们需要重启网卡，使设置生效。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Restart-NetAdapter</span> <span class="literal">-Name</span> <span class="string">&quot;以太网 13&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">PS</span> C:\&gt;<span class="hljs-built_in">Restart-NetAdapter</span> <span class="hljs-literal">-Name</span> <span class="hljs-string">&quot;以太网 13&quot;</span><br></code></pre></td></tr></table></figure>
 <p>重启成功后，我们再次查看RDMA的状态，可以看到RDMA已经启用了。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-NetAdapterRDMA</span></span><br><span class="line">Name                      InterfaceDescription                     Enabled     PFC        ETS</span><br><span class="line"><span class="literal">----</span>                      <span class="literal">--------------------</span>                     <span class="literal">-------</span>     <span class="literal">---</span>        <span class="literal">---</span></span><br><span class="line">以太网 <span class="number">13</span>                 HP InfiniBand FDR/Ethernet <span class="number">10</span>Gb/<span class="number">40</span>Gb ...  True        False      False</span><br><span class="line">以太网 <span class="number">14</span>                 HP InfiniBand FDR/Ethernet <span class="number">10</span>Gb/<span class="number">40</span>Gb ...  True       False      False</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">PS</span> C:\&gt;<span class="hljs-built_in">Get-NetAdapterRDMA</span><br>Name                      InterfaceDescription                     Enabled     PFC        ETS<br><span class="hljs-literal">----</span>                      <span class="hljs-literal">--------------------</span>                     <span class="hljs-literal">-------</span>     <span class="hljs-literal">---</span>        <span class="hljs-literal">---</span><br>以太网 <span class="hljs-number">13</span>                 HP InfiniBand FDR/Ethernet <span class="hljs-number">10</span>Gb/<span class="hljs-number">40</span>Gb ...  True        False      False<br>以太网 <span class="hljs-number">14</span>                 HP InfiniBand FDR/Ethernet <span class="hljs-number">10</span>Gb/<span class="hljs-number">40</span>Gb ...  True       False      False<br></code></pre></td></tr></table></figure>
 <p>检查SMB的RDMA状态，可以看到客户端SMB的RDMA也已经启用了。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\&gt;<span class="built_in">Get-SmbClientNetworkInterface</span></span><br><span class="line">Interface Index RSS Capable RDMA Capable Speed    IpAddresses</span><br><span class="line"><span class="literal">---------------</span> <span class="literal">-----------</span> <span class="literal">------------</span> <span class="literal">-----</span>    <span class="literal">-----------</span></span><br><span class="line"><span class="number">12</span>              True        True         <span class="number">40</span> Gbps  &#123;...&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">PS</span> C:\&gt;<span class="hljs-built_in">Get-SmbClientNetworkInterface</span><br>Interface Index RSS Capable RDMA Capable Speed    IpAddresses<br><span class="hljs-literal">---------------</span> <span class="hljs-literal">-----------</span> <span class="hljs-literal">------------</span> <span class="hljs-literal">-----</span>    <span class="hljs-literal">-----------</span><br><span class="hljs-number">12</span>              True        True         <span class="hljs-number">40</span> Gbps  &#123;...&#125;<br>...<br></code></pre></td></tr></table></figure>
 
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Windows/" class="print-no-link">#Windows</a>
+      
+        <a href="/tags/Mellanox/" class="print-no-link">#Mellanox</a>
+      
+        <a href="/tags/RDMA/" class="print-no-link">#RDMA</a>
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2024/02/29/mellanox-win-rocev2/" data-id="clt7jzo4q000i90wcetihddcg" data-title="排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题" class="article-share-link"><span class="fa fa-share">分享</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mellanox/" rel="tag">Mellanox</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RDMA/" rel="tag">RDMA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
+  
+</div>
 
-    </footer>
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题</div>
+      <div>http://example.com/2024/02/29/mellanox-win-rocev2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Frank Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2024/03/01/winserver-android-hyperv/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">前一篇</strong>
-      <div class="article-nav-title">
-        
-          在Windows Server 2022上安装Android模拟器
-        
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/03/01/winserver-android-hyperv/" title="在Windows Server 2022上安装Android模拟器">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">在Windows Server 2022上安装Android模拟器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/02/29/zte-modem-crash/" title="记录一次光猫崩溃">
+                        <span class="hidden-mobile">记录一次光猫崩溃</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
       </div>
-    </a>
-  
-  
-    <a href="/2024/02/29/zte-modem-crash/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">记录一次光猫崩溃</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blog/" rel="tag">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyper-V/" rel="tag">Hyper-V</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mellanox/" rel="tag">Mellanox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RDMA/" rel="tag">RDMA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TR069/" rel="tag">TR069</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Telnet/" rel="tag">Telnet</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%89%E7%8C%AB/" rel="tag">光猫</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F/" rel="tag">明日方舟</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E4%BF%A1/" rel="tag">电信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
     </div>
-  </div>
 
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签云</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/Blog/" style="font-size: 10px;">Blog</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Hyper-V/" style="font-size: 10px;">Hyper-V</a> <a href="/tags/Mellanox/" style="font-size: 10px;">Mellanox</a> <a href="/tags/RDMA/" style="font-size: 10px;">RDMA</a> <a href="/tags/TR069/" style="font-size: 10px;">TR069</a> <a href="/tags/Telnet/" style="font-size: 10px;">Telnet</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/%E5%85%89%E7%8C%AB/" style="font-size: 10px;">光猫</a> <a href="/tags/%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F/" style="font-size: 10px;">明日方舟</a> <a href="/tags/%E7%94%B5%E4%BF%A1/" style="font-size: 10px;">电信</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/03/">三月 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/02/">二月 2024</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2024/03/01/winserver-android-hyperv/">在Windows Server 2022上安装Android模拟器</a>
-          </li>
-        
-          <li>
-            <a href="/2024/02/29/mellanox-win-rocev2/">排查Mellanox ConnectX-3 Pro 在Windows下无法启动RDMA的问题</a>
-          </li>
-        
-          <li>
-            <a href="/2024/02/29/zte-modem-crash/">记录一次光猫崩溃</a>
-          </li>
-        
-          <li>
-            <a href="/2024/02/28/Hexo-build/">记录一次Hexo的搭建与部署</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
+    <div class="side-col d-none d-lg-block col-lg-2">
       
-      &copy; 2024 Frank Gu<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
 
     </div>
-    <nav id="mobile-nav">
+  </div>
+</div>
+
+
+
+
+
   
-    <a href="/" class="mobile-nav-link">Home</a>
+
+
+
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
+
+
+
   
-</nav>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
     
 
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
 
-<script src="/js/jquery-3.6.4.min.js"></script>
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
+    <script  src="/js/img-lazyload.js" ></script>
+  
 
 
 
 
-<script src="/js/script.js"></script>
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
 
 
 
 
 
-  </div>
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>
