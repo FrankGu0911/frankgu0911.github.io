@@ -19,20 +19,20 @@
     <meta name="description" content="背景2024年2月27日，上海电信对中兴光猫G7615进行推送升级，版本变为V2.0.0P2T3。笔者是自己购买的光猫，不是电信给的，所有参数都是自己设置的，无法通过电信自动下发。在自动更新后，疑似是电信自动下发的配置文件导致光猫崩溃，先是IPTV无法使用，在光猫重启后，无法上网。同时光猫的管理员密码被电信的TR069协议修改，通过Web页面只能登陆普通用户，没有管理员权限，无法配置参数。联系运维">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记录一次光猫崩溃">
-<meta property="og:url" content="http://example.com/2024/02/29/zte-modem-crash/index.html">
+<meta property="og:url" content="https://frankgu0911.github.io/2024/02/29/zte-modem-crash/index.html">
 <meta property="og:site_name" content="Frank Tech Blog">
 <meta property="og:description" content="背景2024年2月27日，上海电信对中兴光猫G7615进行推送升级，版本变为V2.0.0P2T3。笔者是自己购买的光猫，不是电信给的，所有参数都是自己设置的，无法通过电信自动下发。在自动更新后，疑似是电信自动下发的配置文件导致光猫崩溃，先是IPTV无法使用，在光猫重启后，无法上网。同时光猫的管理员密码被电信的TR069协议修改，通过Web页面只能登陆普通用户，没有管理员权限，无法配置参数。联系运维">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/zte-modem/autoupdate.png">
-<meta property="og:image" content="http://example.com/images/zte-modem/zte-telnetopen.png">
-<meta property="og:image" content="http://example.com/images/zte-modem/telnet-con.png">
-<meta property="og:image" content="http://example.com/images/zte-modem/network.png">
-<meta property="og:image" content="http://example.com/images/zte-modem/iptv.png">
-<meta property="og:image" content="http://example.com/images/zte-modem/vlan-iptv.png">
-<meta property="og:image" content="http://example.com/images/zte-modem/lan.png">
-<meta property="og:image" content="http://example.com/images/zte-modem/igmp.png">
+<meta property="og:image" content="https://frankgu0911.github.io/images/zte-modem/autoupdate.png">
+<meta property="og:image" content="https://frankgu0911.github.io/images/zte-modem/zte-telnetopen.png">
+<meta property="og:image" content="https://frankgu0911.github.io/images/zte-modem/telnet-con.png">
+<meta property="og:image" content="https://frankgu0911.github.io/images/zte-modem/network.png">
+<meta property="og:image" content="https://frankgu0911.github.io/images/zte-modem/iptv.png">
+<meta property="og:image" content="https://frankgu0911.github.io/images/zte-modem/vlan-iptv.png">
+<meta property="og:image" content="https://frankgu0911.github.io/images/zte-modem/lan.png">
+<meta property="og:image" content="https://frankgu0911.github.io/images/zte-modem/igmp.png">
 <meta property="article:published_time" content="2024-02-28T17:21:14.000Z">
-<meta property="article:modified_time" content="2024-02-29T17:19:59.155Z">
+<meta property="article:modified_time" content="2024-03-06T18:01:16.808Z">
 <meta property="article:author" content="Frank Gu">
 <meta property="article:tag" content="网络">
 <meta property="article:tag" content="光猫">
@@ -40,7 +40,7 @@
 <meta property="article:tag" content="TR069">
 <meta property="article:tag" content="Telnet">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/zte-modem/autoupdate.png">
+<meta name="twitter:image" content="https://frankgu0911.github.io/images/zte-modem/autoupdate.png">
   
   
   
@@ -82,7 +82,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"frankgu0911.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -287,13 +287,18 @@
               <div class="markdown-body">
                 
                 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>2024年2月27日，上海电信对中兴光猫G7615进行推送升级，版本变为V2.0.0P2T3。笔者是自己购买的光猫，不是电信给的，所有参数都是自己设置的，无法通过电信自动下发。在自动更新后，疑似是电信自动下发的配置文件导致光猫崩溃，先是IPTV无法使用，在光猫重启后，无法上网。同时光猫的管理员密码被电信的TR069协议修改，通过Web页面只能登陆普通用户，没有管理员权限，无法配置参数。联系运维小哥，被告知只能换回SDN光猫，无法桥接，无法使用自己的路由器来拨号。遂折腾了一天，重新配置，终于恢复如初，就此记录一下折腾的过程。<br><img src="/images/zte-modem/autoupdate.png" srcset="/img/loading.gif" lazyload alt="光猫被自动升级了"></p>
-<h2 id="重置光猫"><a href="#重置光猫" class="headerlink" title="重置光猫"></a>重置光猫</h2><h1 id="先拔掉光纤！先拔掉光纤！先拔掉光纤！"><a href="#先拔掉光纤！先拔掉光纤！先拔掉光纤！" class="headerlink" title="先拔掉光纤！先拔掉光纤！先拔掉光纤！"></a><strong><span style="color:red;">先拔掉光纤！先拔掉光纤！先拔掉光纤！</span></strong></h1><p>重要的事情说三遍！如果不拔掉光纤，光猫会自动通过电信的TR069协议改管理员密码。进不了光猫后台就什么都干不了！</p>
+<h2 id="重置光猫"><a href="#重置光猫" class="headerlink" title="重置光猫"></a>重置光猫</h2><p class="note note-danger" style="font-weight: bold;  font-size: 18px;">先拔掉光纤！先拔掉光纤！先拔掉光纤！</p>
+<!-- # **<span style="color:red;">先拔掉光纤！先拔掉光纤！先拔掉光纤！</span>** -->
+
+<p>重要的事情说三遍！如果不拔掉光纤，光猫会自动通过电信的TR069协议改管理员密码。进不了光猫后台就什么都干不了！</p>
 <ol>
 <li>拔掉光纤，用卡针长按光猫背面的Reset键15-30秒，等待光猫的所有指示灯都亮起，然后松开Reset键。</li>
 <li>用一根网线连接光猫和电脑，由于光猫重置后，DHCP服务不一定会开启，所以需要手动设置电脑的IP地址为<code>192.168.1.2</code>，使用浏览器访问<code>192.168.1.1</code>，输入用户名<code>telecomadmin</code>和密码<code>nE7jA%5m</code>，进入光猫的管理页面。</li>
 <li>需要折腾的话，还需要打开光猫的telnet，但经过实测，V2.0.0P2T3版本的光猫已经无法通过开源工具解锁telnet，所以我们需要先降级光猫的固件。这里我使用的是恩山找到的<code>V2.0.0P1N15E</code>版本的相对较老的固件，原帖子在<a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-8310054-1-2.html">这里</a>，在我的仓库也可以<a target="_blank" rel="noopener" href="https://github.com/FrankGu0911/zte_modem_tools/blob/main/firmware/G7615_CT_V2.0.0P1N15E_20230812_UPGRADE_BOOTLDR_ALL.bin">下载</a>，保证可以解锁telnet。（降级一定要确定硬件版本，选择合适自己得版本降级）</li>
 </ol>
-<h1 id="注意，只适用于G7615电信原版，联通版等手动刷了电信分区的机器切勿尝试，会砖，会砖，会砖"><a href="#注意，只适用于G7615电信原版，联通版等手动刷了电信分区的机器切勿尝试，会砖，会砖，会砖" class="headerlink" title="!!注意，只适用于G7615电信原版，联通版等手动刷了电信分区的机器切勿尝试，会砖，会砖，会砖!!"></a><strong><span style="color:red;">!!注意，只适用于G7615电信原版，联通版等手动刷了电信分区的机器切勿尝试，会砖，会砖，会砖!!</span></strong></h1><ol start="4">
+<p class="note note-danger" style="font-weight: bold;  font-size: 18px;">!!注意，只适用于G7615电信原版，联通版等手动刷了电信分区的机器切勿尝试，会砖，会砖，会砖!!</p>
+
+<ol start="4">
 <li>寻找一番发现，光猫的固件升级页面是隐藏的，需要在地址栏输入<code>http://192.168.1.1:8080/login.cgi?username=telecomadmin&amp;psd=nE7jA%255m&amp;hidden=upgrade</code>，然后点击管理-&gt;设备管理-&gt;软件版本升级，上传bin升级。</li>
 <li>降级成功后，自动重启，重新登录管理页面，此时硬件版本显示：V1.3.0 软件版本：V2.0.0P1T1下面就开始开启telnet来折腾。</li>
 </ol>
@@ -365,7 +370,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>记录一次光猫崩溃</div>
-      <div>http://example.com/2024/02/29/zte-modem-crash/</div>
+      <div>https://frankgu0911.github.io/2024/02/29/zte-modem-crash/</div>
     </div>
     <div class="license-meta">
       
