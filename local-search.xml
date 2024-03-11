@@ -4,6 +4,48 @@
   
   
   <entry>
+    <title>来装一台软路由</title>
+    <link href="/2024/03/11/Build-a-Software-Router/"/>
+    <url>/2024/03/11/Build-a-Software-Router/</url>
+    
+    <content type="html"><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>之前使用的小米BE7000路由器，最近觉得他的IPV6有些许卡顿，同时想升级一下40G内网，12口的SX6036又觉得有些大且用不上12口，所以决定自己装一台软路由，折腾一下。</p><h2 id="硬件选择"><a href="#硬件选择" class="headerlink" title="硬件选择"></a>硬件选择</h2><p>在硬件选择之前，先明确一下需求：</p><ol><li>高速40G内网，双口即够用</li><li>正常使用的2.5G内网，5口或者更多</li><li>较低功耗</li><li>需要一颗核显来跑一些游戏模拟器之类的（我们粥批是这样的）</li></ol><h3 id="机箱"><a href="#机箱" class="headerlink" title="机箱"></a>机箱</h3><p>这样的需求下，我决定先选择机箱。我们需要一块HPE 544+的Mellanox网卡，所以需要一个全高插槽，主板至少要自带一个2.5G网口，这样只需要再买一张4口的2.5G网卡即可，diewu家有一张半高的。在一番搜寻下，在一个手工作坊的小店里找到了一个符合我奇怪需求的<a href="https://item.taobao.com/item.htm?id=628158610335">神奇机箱</a>，非常工业风，能通过延长线插一个全高和一个半高的PCI-E卡，直接拿下。<br><img src="/images/soft-router/case.jpg" alt="神奇机箱"></p><h3 id="主板"><a href="#主板" class="headerlink" title="主板"></a>主板</h3><p>由于有核显需求，只能选择Intel的平台（预算问题没考虑上AMD的Zen4或APU），所以要在H610&#x2F;B660&#x2F;B760平台中选择一块ITX的，带至少一个2.5G网口的主板。还是因为预算问题，最终在精粤和尔英这两家中做选择（我也想买御三家的，奈何没钱啊）。精粤多一个1G网口，但贵200，so，尔英赢了。注意，尔英的B760i有两个版本，一个是啥都没标的，一个是标ARGB的。虽然我这次用不到ARGB，但是前一个版本的散热盔甲设计有问题，会遮挡绝大多数的CPU散热器，且有南桥散热器会顶弯M.2硬盘的问题，所以还是选择了贵40的ARGB版本。<br><img src="/images/soft-router/mainboard.jpg" alt="尔英主板"></p><h3 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h3><p>在预算与功耗的限制下，CPU貌似没得选，只能i3-12100了。至于为什么不选带T的低功耗版，因为我们粥批是这样的。</p><h3 id="电源"><a href="#电源" class="headerlink" title="电源"></a>电源</h3><p>这种体积的机箱，只能用DC-ATX电源。而且针对软路由这种24小时开机的设备，DC-ATX电源的转换率也相对较高一些。选了个160W的，稍微留了些余量，应该够用。<br><img src="/images/soft-router/powersupply.jpg" alt="DC-ATX电源"></p><h3 id="散热器"><a href="#散热器" class="headerlink" title="散热器"></a>散热器</h3><p>这个机箱的散热器只能用低一点的下压式散热器，一开始选择了ID-COOLING IS-40X，安装的时候发现47mm的太高了，会挡住全高的那张网卡，后来换成了利民的AXP90-X36，这个高度是36mm，但也会卡住一点点网卡，不过还是能用。</p><h3 id="网卡"><a href="#网卡" class="headerlink" title="网卡"></a>网卡</h3><p>40G内网需要双口，所以选择了HPE 544+，这卡由于是HPE的特殊接口的卡，所以巨便宜，算上转接板60块钱。这张卡支持RDMA，而且是ROCEv2，用在软路由上做软桥接也能正确配置，所以性价比非常高。<br><img src="/images/soft-router/hpe544.jpg" alt="HPE 544+"></p><p>2.5G网卡选择了diewu的4口2.5G网卡，8125芯片的，249块钱，这个不便宜，但他家的带一块巨大散热片，对稳定性有一定的保障。<br><img src="/images/soft-router/diewu4port.jpg" alt="diewu 4口2.5G"></p><p>大件（奇葩件）基本都确定了，浅列一下配置单：</p><table><thead><tr><th>配件</th><th>型号</th><th>到手价格</th></tr></thead><tbody><tr><td>CPU</td><td>i3-12100</td><td>599</td></tr><tr><td>主板</td><td>尔英B760i-ARGB</td><td>449</td></tr><tr><td>内存</td><td>光威天策3200C18 16G*2</td><td>364</td></tr><tr><td>硬盘</td><td>铠侠RC20 1T</td><td>抽屉里翻出来的</td></tr><tr><td>电源</td><td>DC-ATX 160W</td><td>95</td></tr><tr><td>机箱</td><td>神奇机箱</td><td>109</td></tr><tr><td>散热器</td><td>利民AXP90-X36</td><td>99</td></tr><tr><td>网卡1</td><td>HPE 544+</td><td>60</td></tr><tr><td>网卡2</td><td>diewu 4口2.5G</td><td>249</td></tr><tr><td>合计</td><td></td><td>2024</td></tr></tbody></table><p>总价居然和年份一样，这个价格还是贵了点，但如果选择前几代平台，可能会便宜一些，但功耗会高一些，所以还是选择了12100。</p><p><img src="/images/soft-router/hardware.jpg" alt="硬件进箱"></p><h2 id="软件系统"><a href="#软件系统" class="headerlink" title="软件系统"></a>软件系统</h2><p>因为我是粥批，所以选择了Windows Server 2022做宿主机系统，这样我可以直接用Winserver安装安卓模拟器来挂明日方舟，可以充分利用到核显（关于在Windows Server 2022上安装安卓模拟器的教程，可以参考我之前的文章<a href="/2024/03/01/winserver-android-hyperv/">在Windows Server 2022上安装安卓模拟器</a>）。然后用Hyper-V安装了iStoreOS作为软路由系统，并将所有网口都直通给iStoreOS（这里有坑）。</p><h3 id="网卡直通"><a href="#网卡直通" class="headerlink" title="网卡直通"></a>网卡直通</h3><p>利用这个<a href="https://github.com/chanket/DDA">工具</a>，可以在图形化界面上直通网卡给虚拟机，但由于这个工具并非官方工具，存在一些bug（也可能是微软DDA的bug），所以还是需要知道一下PowerShell的命令，以便在出现问题时能够手动操作。先到设备管理器中找到需要直通的网卡，右键属性，详细信息，找到“位置路径”这一项，复制那个PCIROOT开头的路径，这是你的网卡的位置路径。<br><img src="/images/soft-router/dda-path.jpg" alt="位置路径"><br>然后打开PowerShell，输入以下命令：</p><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-variable">$a</span>=<span class="hljs-string">&quot;PCIROOT(x)#PCI(xxx)#PCI(xxx)&quot;</span> <span class="hljs-comment">#这里替换成你的位置路径</span><br><span class="hljs-built_in">Dismount-VMHostAssignableDevice</span> <span class="hljs-literal">-Force</span> <span class="hljs-literal">-LocationPath</span> <span class="hljs-variable">$a</span><br><span class="hljs-comment"># 这里可能会报错，说需要禁用网卡，那就禁用网卡，然后再执行上面的命令</span><br><span class="hljs-built_in">Add-VMAssignableDevice</span> <span class="hljs-literal">-LocationPath</span> <span class="hljs-variable">$a</span> <span class="hljs-literal">-VMName</span> iStoreOS<br><span class="hljs-comment"># iStoreOS是我的软路由虚拟机的名字，这里替换成你的虚拟机的名字</span><br></code></pre></td></tr></table></figure><p>这样理论上就已经将网卡直通给虚拟机了，但是在我的环境下，两张网卡各有各的坑。都是发生在当虚拟机开机的情况下，直接断电或者关闭宿主机，再次开机后，虚拟机无法启动，两张网卡都会报错。首先需要执行以下操作：</p><ol><li>打开Hyper-V管理器，找到虚拟机，右键设置，自动停止操作，选择“强制关闭虚拟机”。默认选择的是“保存虚拟机状态”，这样直通了网卡的虚拟机会去锁定网卡，导致宿主机无法使用网卡，而下一次开机时，锁定的网卡无法被虚拟机使用，循环上了。</li><li>打开powershell，把之前已经直通了的网卡取消直通，输入以下命令：</li></ol><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">Remove-VMAssignableDevice</span> <span class="hljs-literal">-LocationPath</span> <span class="hljs-variable">$a</span> <span class="hljs-literal">-VMName</span> iStoreOS<br><span class="hljs-built_in">Mount-VMHostAssignableDevice</span> <span class="hljs-literal">-LocationPath</span> <span class="hljs-variable">$a</span><br></code></pre></td></tr></table></figure><ol start="3"><li>重启宿主机，再次直通网卡给虚拟机，这样理论上虚拟机就能正常启动了。但在我的环境下，步骤2就会报错，而且两张网卡的报错不一样。</li></ol><h4 id="HPE-544"><a href="#HPE-544" class="headerlink" title="HPE 544+"></a>HPE 544+</h4><p>这个卡会提示<code>在设备卸除期间，无法加载必需的虚拟化驱动程序pcip.sys</code>，这个问题我猜测是因为直通了网卡，关机保存状态时锁定了注册表中的某一项，导致下次设备卸除的时候，找不到pcip.sys这个驱动，所以无法加载。</p><p>解决方法：</p><ol><li>在设备管理器中找到这个网卡，右键属性，详细信息，找到“硬件ID”这一项，复制那个<code>PCI\VEN_xxxx&amp;DEV_xxxx</code>这个ID。</li><li>打开注册表，找到<code>\HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Enum\PCIP\PCI\VEN_xxxx&amp;DEV_xxxx</code>这个路径，下面应该有你直通的网卡，我们需要全部删除，重新直通，让系统重新生成这些注册表项。</li><li>在删除时，可能会提示权限不足，这是因为注册表项被锁定了，需要一层一层的解锁，非常麻烦，之后如果再次出现这个问题，我会尝试使用写一个Python脚本来解决这个问题。</li><li>删除完注册表项后，重启宿主机，再次直通网卡给虚拟机，这样理论上虚拟机就能正常启动了。</li></ol><h4 id="Realtek-8125"><a href="#Realtek-8125" class="headerlink" title="Realtek 8125"></a>Realtek 8125</h4><p>这个卡会提示“无法找到PCI路径”之类的错误，我本以为是和HPE 544+一样的问题，在操作过之后也能解决。但在配置完“强制关闭虚拟机”后，再次开机，这个错误又出现了。然而如果只直通HPE 544+，不直通Realtek 8125，这个错误就不会出现。所以和HPE 544+的问题不一样。在一顿尝试之后，我发现只要在直通之前，把Realtek 8125的所有关于“wol唤醒”和“节能”之类的功能都关闭，这个错误就不会出现。</p><ol><li>打开设备管理器，找到Realtek 8125，右键属性，高级，找到“关机唤醒”，选择“关闭”；找到“环保节能”，选择“关闭”；找到“节能以太网路”，选择“关闭”。</li><li>点开“电源管理”，取消勾选“允许计算机关闭此设备以节约电源”，“允许此设备唤醒计算机”。</li><li>重启宿主机，再次直通网卡给虚拟机，这样在意外断电或者强制关闭虚拟机后，再次开机，这个错误就不会出现了。</li></ol><p><img src="/images/soft-router/rtl8125.jpg" alt="Realtek 8125设置"></p><h3 id="软路由系统"><a href="#软路由系统" class="headerlink" title="软路由系统"></a>软路由系统</h3><p>原本是想选择爱快的，想着爱快可能稳定一些，也可能会对大墙内的网络环境有些特殊优化，但在测试之后发现，爱快的局域网网口无法开启巨帧，没法把MTU改成9000，这样40G的网卡就没法发挥出最大的性能，在测速时，40G网卡的速度只有5Gbps左右（主要是Mellanox的ConnectX-3 Pro网卡自身卸载能力也有一定问题，卡也比较老了性能比较差，只能靠打开巨帧来提高性能）；而且爱快的IPV6在我的环境下也有一些问题，MSS钳制时常会失效，时不时的会出现网页无法打开的情况，所以最终还是选择了iStoreOS。</p><p>iStoreOS是一个基于OpenWRT的软路由系统，作者是Koolshare的一位大佬，这个系统的特点是插件丰富，想要的功能基本都有，而且基于OpenWRT的系统，自己也能动手编译一些插件，这样就能满足一些特殊的需求；之后如果有网卡升级的需求，自己也能动手编译内核模块，这样就能支持新的网卡。关于iStoreOS的安装，互联网上有很多教程，这里就不再赘述了。在iStoreOS上打开40G网口的巨帧后，测速能达到25Gbps左右，虽然还是没达标（猜测可能和测速端CPU有关，毕竟我这边的CPU是i3-12100），但已经比爱快好很多了，之后会测试一下两台WinServer2022之间打开RDMA之后的速度。</p><p>在iStoreOS上关于IPV6的PMTU问题，我也找到了<a href="https://www.right.com.cn/forum/thread-8347557-1-1.html">解决方法</a>，在防火墙中添加一条规则：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">iptables -t mangle -A POSTROUTING -p tcp --tcp-flags SYN,RST SYN -o pppoe-wan -j TCPMSS --clamp-mss-to-pmtu<br>ip6tables -t mangle -A POSTROUTING -p tcp --tcp-flags SYN,RST SYN -o pppoe-wan -j TCPMSS --clamp-mss-to-pmtu<br></code></pre></td></tr></table></figure><p>这两句防火墙规则是将具有SYN标志位设置（且不设置RST标志位）的TCP数据包，通过pppoe-wan接口发送时，自动调整MSS值，使之不大于路径MTU（PMTU），从而避免由于MTU限制导致的IP分片。这样就能解决PMTU的问题了。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>软路由</tag>
+      
+      <tag>装机</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>解决开启Passwall2后向日葵无法正常远程的问题</title>
+    <link href="/2024/03/11/passwall2-sunlogin/"/>
+    <url>/2024/03/11/passwall2-sunlogin/</url>
+    
+    <content type="html"><![CDATA[<p>最近在软路由上配置了Passwall2，发现向日葵无法正常远程，会弹出“未知远程设备”的提示。就算把<code>oray.net</code>和<code>oray.com</code>加入了直连规则，也无法解决问题。找到了一个相同问题的<a href="https://github.com/xiaorouji/openwrt-passwall2/issues/447">issue</a>，在高级设置中勾选“流量嗅探只供路由使用 (Xray)”即可。</p><p><img src="/images/passwall2-sunlogin-xrayconfig.png" alt="流量嗅探只供路由使用"></p><p>这个选项不勾选时，你会向VPS发送域名准备访问，经过两次转换，但VPS的DNS得到的目标IP更准更近，但向日葵的海外业务是需要开通向日葵全球会员的，所以会出现“未知远程设备”的提示。勾选后，在软路由上进行DNS解析，随后判断出是大陆IP，直接连接，不再向VPS发送域名请求。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>软路由</tag>
+      
+      <tag>Passwall2</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>在Windows Server 2022上安装Android模拟器</title>
     <link href="/2024/03/01/winserver-android-hyperv/"/>
     <url>/2024/03/01/winserver-android-hyperv/</url>
