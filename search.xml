@@ -29,7 +29,7 @@
       <link href="/2024/03/11/passwall2-sunlogin/"/>
       <url>/2024/03/11/passwall2-sunlogin/</url>
       
-        <content type="html"><![CDATA[<p>最近在软路由上配置了Passwall2，发现向日葵无法正常远程，会弹出“未知远程设备”的提示。就算把<code>oray.net</code>和<code>oray.com</code>加入了直连规则，也无法解决问题。找到了一个相同问题的<a href="https://github.com/xiaorouji/openwrt-passwall2/issues/447">issue</a>，在高级设置中勾选“流量嗅探只供路由使用 (Xray)”即可。</p><p><img src="/images/passwall2-sunlogin-xrayconfig.png" alt="流量嗅探只供路由使用"></p><p>这个选项不勾选时，你会向VPS发送域名准备访问，经过两次转换，但VPS的DNS得到的目标IP更准更近，但向日葵的海外业务是需要开通向日葵全球会员的，所以会出现“未知远程设备”的提示。勾选后，在软路由上进行DNS解析，随后判断出是大陆IP，直接连接，不再向VPS发送域名请求。</p>]]></content>
+        <content type="html"><![CDATA[<p><b>2024-03-12 更新</b></p><p>将Passwall2更新到了1.26-1版本，现在不再需要下文步骤了，把节点类型改为Sing-Box即可。</p><p><img src="/images/singbox.jpg" alt="节点类型"></p><hr><p>最近在软路由上配置了Passwall2，发现向日葵无法正常远程，会弹出“未知远程设备”的提示。就算把<code>oray.net</code>和<code>oray.com</code>加入了直连规则，也无法解决问题。找到了一个相同问题的<a href="https://github.com/xiaorouji/openwrt-passwall2/issues/447">issue</a>，在高级设置中勾选“流量嗅探只供路由使用 (Xray)”即可。</p><p><img src="/images/passwall2-sunlogin-xrayconfig.png" alt="流量嗅探只供路由使用"></p><p>这个选项不勾选时，你会向VPS发送域名准备访问，经过两次转换，但VPS的DNS得到的目标IP更准更近，但向日葵的海外业务是需要开通向日葵全球会员的，所以会出现“未知远程设备”的提示。勾选后，在软路由上进行DNS解析，随后判断出是大陆IP，直接连接，不再向VPS发送域名请求。</p>]]></content>
       
       
       
