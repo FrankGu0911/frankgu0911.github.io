@@ -4,6 +4,29 @@
   
     
     <entry>
+      <title>如何使用Quest3录制3D视频</title>
+      <link href="/2024/04/17/Quest-3D-video/"/>
+      <url>/2024/04/17/Quest-3D-video/</url>
+      
+        <content type="html"><![CDATA[<p>笔者为了提高生产力（买后爱奇艺），把VR当做多屏显示器使用，顺便欣赏一下3D视频中的奇异世界（小姐姐），在日亚花了39伯大洋买了一个Quest3，（现在发现拼多多更便宜，我是傻逼）。然而，我发现了一个问题，Quest3的录制功能只能录制2D视频，设置选项中只有选录左眼视角还是右眼视角，没有3D选项。那么，如何使用Quest3录制3D视频呢？</p><h2 id="1-开启开发者模式"><a href="#1-开启开发者模式" class="headerlink" title="1. 开启开发者模式"></a>1. 开启开发者模式</h2><p>虽然Quest3这台设备是安卓系统，但是它的开发者模式并不是那么容易开启的，需要在<a href="https://developer.oculus.com/">Meta开发者网站</a>注册开发者账号，注册后，导航到你的Meta Quest app。在设备找到你的Quest 3，进入头显设置，并启用开发者模式。这样，你的Quest 3就可以使用ADB连接到电脑上了。</p><h2 id="2-使用ADB连接到电脑"><a href="#2-使用ADB连接到电脑" class="headerlink" title="2. 使用ADB连接到电脑"></a>2. 使用ADB连接到电脑</h2><p>先去下载ADB工具，并配置环境变量（或到ADB的目录下），再用USB线连接电脑和Quest 3，然后在终端输入以下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">adb devices<br></code></pre></td></tr></table></figure><p>如果出现设备号，说明连接成功。</p><h2 id="3-使用ADB命令配置录制参数"><a href="#3-使用ADB命令配置录制参数" class="headerlink" title="3. 使用ADB命令配置录制参数"></a>3. 使用ADB命令配置录制参数</h2><p>Quest 3的录制参数是通过ADB命令设置的，在终端输入以下命令，设置录制参数：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">adb shell setprop debug.oculus.screenCaptureEye 2 <span class="hljs-comment"># 0:左眼，1:右眼，2:双眼</span><br>adb shell setprop debug.oculus.capture.width 3840 <span class="hljs-comment"># 分辨率</span><br>adb shell setprop debug.oculus.capture.height 1920 <span class="hljs-comment"># 分辨率</span><br>adb shell setprop debug.oculus.fullRateCapture 0 <span class="hljs-comment"># 帧率</span><br>adb shell setprop debug.oculus.capture.bitrate 40000000 <span class="hljs-comment"># 码率</span><br></code></pre></td></tr></table></figure><h2 id="4-相机防抖设置"><a href="#4-相机防抖设置" class="headerlink" title="4. 相机防抖设置"></a>4. 相机防抖设置</h2><p>在设置&gt;系统&gt;相机&gt;图像稳定性调&gt;最高。</p><hr><p>这个录制视频，本质还是录制左右屏幕，录制完3D视频后，可以使用4XVR等播放器播放。缺陷例如图像清晰度不高或像素低，希望官方后续会发布真正3D录制功能。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> VR </tag>
+            
+            <tag> Quest3 </tag>
+            
+            <tag> 3D video </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>来装一台软路由</title>
       <link href="/2024/03/11/Build-a-Software-Router/"/>
       <url>/2024/03/11/Build-a-Software-Router/</url>
